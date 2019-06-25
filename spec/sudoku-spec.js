@@ -7,10 +7,18 @@ describe ('sudoku', function(){
     expect(myPuzzle.valid).toEqual(true);
   });
 
-  it('should tell whether an array has unique numbers 1-9', function(){
-      myPuzzle.uniqueNumberCheck();
+  it('should tell whether an array has unique rows numbers 1-9', function(){
+      myPuzzle.uniqueRowCheck();
       expect(myPuzzle.valid).toEqual(true);
   });
+
+  it('should tell whether an array has unique columns numbers 1-9', function(){
+      myPuzzle.uniqueColCheck();
+      expect(myPuzzle.valid).toEqual(true);
+  });
+
+
+
 });
 
 
