@@ -6,6 +6,11 @@ describe ('sudoku', function(){
     myPuzzle.numberCheck();
     expect(myPuzzle.valid).toEqual(true);
   });
+
+  it('should tell whether an array has unique numbers 1-9', function(){
+      myPuzzle.uniqueNumberCheck();
+      expect(myPuzzle.valid).toEqual(true);
+  });
 });
 
 
