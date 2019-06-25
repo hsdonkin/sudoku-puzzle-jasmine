@@ -1,0 +1,222 @@
+1. get Node.js and run command
+    $ npm init -y
+
+2. install webpack:
+    $ npm install webpack@4.19.1 --save-dev-exact
+
+    "exact" in this line is version pinning, where you explicitly say
+    that you need this specific model of webpack
+
+3. install webpack CLI (command line interface)
+    $ npm install webpack-cli@2.0.9 --save-dev
+
+4. install packages for production and development:
+    template command:
+    $ npm install PACKAGE-NAME-HERE --save
+
+5. add .gitignore file and open in text editor
+   add node_modules and .DS_Store, because these are freaking huge
+   and shouldn't be included when you upload to github. Dist also
+   can be added here, because what you uplaod to github is
+   just for your development later.
+
+   node_modules/
+   .DS_Store
+   dist/
+
+6. Check out package.json and make sure all your stuff is in there
+
+7. Edit package.json and tell it you need to run the script for
+   build webpack:
+
+   "scripts": {
+     "build": "webpack"
+   },
+
+8. Configure webpack by creating a file called webpack.config.js.
+   Add this code to that file:
+
+      const path = require('path');
+
+      module.exports = {
+        entry: './src/main.js',
+        output: {
+          filename: 'bundle.js',
+          path: path.resolve(__dirname, 'dist')
+        }
+      };
+
+      ------------------------
+
+      The "entry point" is where webpack enters the application, so it's
+      like your big control section. It's like the header in your index.html,
+      except it's your JS file.
+
+      The "output" is the new minified JS file that will hold all your stuff!
+
+9. Make a new JS file for any custom logic you're writing:
+    YOURFILENAME.js
+
+    Any objects you create in there, you can import into your main.js file.
+    Prototypes are automagically imported when you import the object.
+
+    ### Buyer beware! Troubleshooting JS issues becomes really hard because
+    the JS will be minified and none of your variables are the same name.
+    Goodbye easy console logs in the browser window.
+
+    main.js
+    --------------
+    import { Triangle } from './../js/YOURFILENAME.js';
+
+
+    YOURFILENAME.js
+    --------------
+    export function Triangle(side1, side2, side3) {
+      this.side1 = side1;
+      etc etc etc
+    }
+
+    Triangle.prototype.sayHello = function(){
+      console.log("Hello!");
+    }
+
+
+10. Install style-loader and css-loader so you can get CSS in your
+    page. Otherwise, it'll bundle everything without it!
+
+    Steps to success: install the loaders, update your webpack config,
+    set up an import line in main.js, create a styles.css file.
+
+    $ npm install style-loader@0.20.2 --save-dev
+    $ npm install css-loader@0.28.10 --save-dev
+
+    webpack.config.js
+    ------------
+    const path = require('path');
+
+    module.exports = {
+      entry: './src/main.js',
+      output: {
+        filename: 'bundle.js',
+        path: path.resolve(__dirname, 'dist')
+      },
+      module: {
+        rules: [
+          {
+            test: /\.css$/,
+            use: [
+              'style-loader',
+              'css-loader'
+            ]
+          }
+        ]
+      }
+    };
+
+
+    main.js
+    ----------
+    import './styles.css';
+
+    styles.css
+    ----------
+    body{
+    background-color: #adfafa;
+    }
+
+11. Install HTMLWebpackPlugin so that webpack will generate a new html
+    file for your when it compiles everything.
+
+    $ npm install html-webpack-plugin@3.0.6 --save-dev
+
+        new code:
+
+        const HtmlWebpackPlugin = require('html-webpack-plugin');
+
+        module.exports{
+        ////// some stuff here
+        },
+
+        plugins: [
+          new HtmlWebpackPlugin({
+           title: 'Your Page Name',
+           template: './src/index.html',
+           inject: 'body'
+           })
+         ],
+
+         module: {
+         //// some stuff here
+         }
+       ] /// annoying
+      }  /// staircase
+    };   /// of doom
+
+12. Install the webpack cleanup plugin! This deletes everything in the
+    dist folder every time you build, so all your changes get updated.
+
+    $ npm install clean-webpack-plugin@0.1.18 --save-dev
+
+    webpack.config.js
+    ------------
+    const CleanWebpackPlugin = require('clean-webpack-plugin');
+
+    module.exports = {
+
+      /// some stuff here
+
+      plugins: [
+        new CleanWebpackPlugin(['dist']),
+        new HtmlWebpackPlugin({
+          title: 'Your Page Name',
+          template: './src/index.html',
+          inject: 'body'
+        })
+      ],
+
+      /// some stuff here
+
+    }
+
+14. Create a build and watch npm not work. Go back, and try and figure out
+    where the typo in your project is.
+
+    $ npm run build
+
+15. Common troubleshooting:
+    - is there an index.html in your src file?
+    - is there a body element in that index.html?
+    - is your css linked in the main.js file?
+    - did you install something, and then never connect it in webpack.config.js?
+
+
+
+
+Sample code segments:
+
+1. Importing variables and functions into main.js:
+
+    main.js
+    ----------
+    import './styles.css';
+    import $ from 'jquery';
+
+    import {doSomeMath, didSomeMath} from "./buttonscript.js";
+
+
+    $(document).ready(function(){
+      $(".button").click(function(){
+        var x = doSomeMath(3,4);
+        console.log(x);
+        console.log(didSomeMath);
+      })
+
+    });
+
+    buttonscript.js
+    ----------
+    export function doSomeMath(a, b){
+      return a + b;
+    }
+
+    export var didSomeMath = doSomeMath(7,10);
